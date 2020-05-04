@@ -16,7 +16,7 @@ static int is_valid_line(char *line)
 static int split_config_pair(char *line, char **name, char **value)
 {
     *name = strtok(line, "=");
-    *value = strtok(NULL, "\n");
+    *value = strtok(NULL, "#");
     if (name == NULL || value == NULL)
     {
         return -1;
@@ -57,6 +57,18 @@ static int load_config_option(const char *name, const char *value, config_handle
         char sval[80];
         if (sscanf(value, "%s", sval) == 1)
             strncpy(config->interface, sval, 80);
+    }
+    else if (strncmp(name, "brightness_min", 14) == 0)
+    {
+        int ival;
+            if (sscanf(value, "%d", &ival) == 1)
+                config->brightness_min = ival;
+    }
+    else if (strncmp(name, "brightness_max", 14) == 0)
+    {
+        int ival;
+            if (sscanf(value, "%d", &ival) == 1)
+                config->brightness_max = ival;
     }
     else
     {
