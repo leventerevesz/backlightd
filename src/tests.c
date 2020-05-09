@@ -27,11 +27,21 @@ void test_set_brightness(void)
     set_brightness(77, config.interface);
 }
 
+void test_sunset_sunrise_times(void)
+{
+    config_t config;
+    read_config(CONFIG_PATH, &config);
+    printf("Current time: %7.4lf hours\n", get_current_time_of_day());
+    printf("Sunrise time: %7.4lf hours\n", get_today_sunrise_time(&config));
+    printf("Sunset  time: %7.4lf hours\n", get_today_sunset_time(&config));
+}
+
 int main(void)
 {
     print_config();
-    test_get_current_brightness();
-    test_set_brightness();
-    test_get_current_brightness();
+    //test_get_current_brightness();
+    //test_set_brightness();
+    //test_get_current_brightness();
+    test_sunset_sunrise_times();
     return 0;
 }

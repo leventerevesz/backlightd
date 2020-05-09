@@ -4,6 +4,9 @@
    This source code is released for free distribution under the terms
    of the GNU General Public License.  */
 
+#ifndef SUNRISE_H
+#define SUNRISE_H
+
 #define SUNRISE_SUNSET -35.0/60.0
 #define CIVIL_TWILIGHT -6.0
 #define NAUTICAL_TWILIGHT -12.0
@@ -52,3 +55,5 @@ int calc_sun_rise_set(
 double calc_day_length(
     int year, int month, int day, double lon, double lat,
     double twilight_type, int upper_limb);
+
+#endif

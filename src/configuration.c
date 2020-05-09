@@ -33,13 +33,13 @@ static int load_config_option(const char *name, const char *value, config_handle
     {
         double dval;
         if (sscanf(value, "%lf", &dval) == 1)
-            config->latitude = dval;
+            config->longitude = dval;
     }
     else if (strncmp(name, "latitude", 8) == 0)
     {
         double dval;
         if (sscanf(value, "%lf", &dval) == 1)
-            config->longitude = dval;
+            config->latitude = dval;
     }
     else if (strncmp(name, "automatic", 9) == 0)
     {

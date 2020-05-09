@@ -24,7 +24,7 @@ int main()
     int day = now->tm_mday;
     
     calc_sun_rise_set(
-        year, month, day, longitude, latitude, CIVIL_TWILIGHT, 1, 
+        year, month, day, longitude, latitude, SUNRISE_SUNSET, 1, 
         &trise, &tset);
     
     struct tm sunrise, sunrise_utc;

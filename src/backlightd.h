@@ -1,3 +1,6 @@
+#ifndef BACKLIGHTD_H
+#define BACKLIGHTD_H
+
 #define CONFIG_PATH "/etc/backlightd/conf"
 
 typedef struct {
@@ -13,3 +16,9 @@ int read_config(const char *config_path, config_handle_t config);
 
 int get_current_brightness(const char *interface);
 void set_brightness(int brightness, const char *interface);
+
+double get_current_time_of_day(void);
+double get_today_sunrise_time(const config_handle_t config);
+double get_today_sunset_time(const config_handle_t config);
+
+#endif

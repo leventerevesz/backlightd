@@ -4,7 +4,7 @@ LIBS=-lm
 DEPS = backlightd.h sunrise.h
 ODIR=../build
 
-_OBJ = tests.o configuration.o driver.o
+_OBJ = tests.o configuration.o driver.o timecalc.o sunrise.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 $(ODIR)/%.o: %.c $(DEPS)
@@ -12,6 +12,7 @@ $(ODIR)/%.o: %.c $(DEPS)
 
 tests: $(OBJ)
 	$(CC) -o $@ $^ $(LIBS) 
+	mv tests ../bin
 
 clean:
 	rm -f $(ODIR)/*.o
