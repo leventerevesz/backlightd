@@ -1,6 +1,8 @@
+#include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "backlightd.h"
+#include "timecalc.h"
 
 void print_config(void)
 {
@@ -28,12 +30,15 @@ void test_set_brightness(void)
 }
 
 void test_sunset_sunrise_times(void)
-{
+{   
     config_t config;
     read_config(CONFIG_PATH, &config);
-    printf("Current time: %7.4lf hours\n", get_current_time_of_day());
-    printf("Sunrise time: %7.4lf hours\n", get_today_sunrise_time(&config));
-    printf("Sunset  time: %7.4lf hours\n", get_today_sunset_time(&config));
+    time_t sunrise = get_today_sunrise_timestamp(&config);
+    time_t sunset = get_today_sunset_timestamp(&config);
+    printf("Sunrise time: (%ld) %s", sunrise, ctime(&sunrise));
+    printf("Sunset  time: (%ld) %s", sunset, ctime(&sunset));
+    printf("Time to sunrise: %lf hours\n", seconds_before_sunrise(&config)/3600.0);
+    printf("Time to sunset : %lf hours\n", seconds_before_sunset(&config)/3600.0);
 }
 
 int main(void)

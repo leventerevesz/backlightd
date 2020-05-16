@@ -2,8 +2,10 @@
 #include <time.h>
 #include "backlightd.h"
 #include "sunrise.h"
+#include "timecalc.h"
 
-double get_current_time_of_day()
+
+static double get_current_hour_of_day()
 {
     time_t t = time(NULL);
     struct tm *now = localtime(&t);
@@ -20,31 +22,19 @@ static struct tm utc2localtime(struct tm utctm)
 }
 
 
-double get_today_sunrise_time(const config_handle_t config)
+static time_t utc_hour_to_timestamp(double hour)
 {
     time_t t = time(NULL);
     struct tm *now = gmtime(&t);
+    struct tm time_utc = *now;
+    time_utc.tm_hour = (int)hour;
+    time_utc.tm_min = (int)(60 * (hour - (int)hour));
     
-    double trise, tset;
-    int year = now->tm_year + 1900;
-    int month = now->tm_mon + 1;
-    int day = now->tm_mday;
-    
-    calc_sun_rise_set(
-        year, month, day, config->longitude, config->latitude, SUNRISE_SUNSET, 1, 
-        &trise, &tset);
-    
-    struct tm sunrise, sunrise_utc;
-    sunrise_utc = *now;
-    sunrise_utc.tm_hour = (int)trise;
-    sunrise_utc.tm_min = (int)(60 * (trise - (int)trise));
-    sunrise = utc2localtime(sunrise_utc);
-
-    return sunrise.tm_hour + (sunrise.tm_min)/60.0 + (sunrise.tm_sec)/3600;
+    return timegm(&time_utc);
 }
 
 
-double get_today_sunset_time(const config_handle_t config)
+static double get_today_sunrise_hour_utc(const config_handle_t config)
 {
     time_t t = time(NULL);
     struct tm *now = gmtime(&t);
@@ -57,12 +47,62 @@ double get_today_sunset_time(const config_handle_t config)
     calc_sun_rise_set(
         year, month, day, config->longitude, config->latitude, SUNRISE_SUNSET, 1, 
         &trise, &tset);
-    
-    struct tm sunset, sunset_utc;
-    sunset_utc = *now;
-    sunset_utc.tm_hour = (int)tset;
-    sunset_utc.tm_min = (int)(60 * (tset - (int)tset));
-    sunset = utc2localtime(sunset_utc);
+    return trise;
+}
 
-    return sunset.tm_hour + (sunset.tm_min)/60.0 + (sunset.tm_sec)/3600;
+time_t get_today_sunrise_timestamp(const config_handle_t config)
+{
+    double trise = get_today_sunrise_hour_utc(config);
+    return utc_hour_to_timestamp(trise);
+}
+
+
+static double get_today_sunset_hour_utc(const config_handle_t config)
+{
+    time_t t = time(NULL);
+    struct tm *now = gmtime(&t);
+    
+    double trise, tset;
+    int year = now->tm_year + 1900;
+    int month = now->tm_mon + 1;
+    int day = now->tm_mday;
+    
+    calc_sun_rise_set(
+        year, month, day, config->longitude, config->latitude, SUNRISE_SUNSET, 1, 
+        &trise, &tset);
+    return tset;
+}
+
+time_t get_today_sunset_timestamp(const config_handle_t config)
+{
+    double tset = get_today_sunset_hour_utc(config);
+    return utc_hour_to_timestamp(tset);
+}
+
+ 
+// deprecated
+static double utc_hour_to_local_hour(double hour)
+{
+    time_t t = time(NULL);
+    struct tm *now = gmtime(&t);
+    struct tm time_utc = *now;
+    time_utc.tm_hour = (int)hour;
+    time_utc.tm_min = (int)(60 * (hour - (int)hour));
+    struct tm time_local = utc2localtime(time_utc);
+
+    return time_local.tm_hour + (time_local.tm_min)/60.0 + (time_local.tm_sec)/3600;
+}
+
+int seconds_before_sunrise(const config_handle_t config)
+{
+    time_t now = time(NULL);
+    time_t sunrise = get_today_sunrise_timestamp(config);
+    return (int)(sunrise - now);
+}
+
+int seconds_before_sunset(const config_handle_t config)
+{
+    time_t now = time(NULL);
+    time_t sunset = get_today_sunset_timestamp(config);
+    return (int)(sunset - now);
 }
