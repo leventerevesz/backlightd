@@ -1,7 +1,7 @@
 CC=gcc
-CFLAGS=-ggdb -Wall
+CFLAGS=
 LIBS=-lm
-DEPS = backlightd.h sunrise.h
+DEPS = backlightd.h sunrise.h timecalc.h
 ODIR=../build
 
 _OBJ = configuration.o driver.o timecalc.o sunrise.o

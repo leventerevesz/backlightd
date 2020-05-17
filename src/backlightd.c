@@ -63,7 +63,7 @@ int main()
 
     config_t config_s;
     config_handle_t config = &config_s;
-    read_config(CONFIG_PATH, config);
+    load_config(CONFIG_PATH, config);
 
     syslog(LOG_INFO, "Backlightd starting up...\n");
 

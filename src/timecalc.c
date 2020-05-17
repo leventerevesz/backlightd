@@ -5,15 +5,6 @@
 #include "timecalc.h"
 
 
-static double get_current_hour_of_day()
-{
-    time_t t = time(NULL);
-    struct tm *now = localtime(&t);
-
-    return now->tm_hour + (now->tm_min)/60.0 + (now->tm_sec)/3600.0;
-}
-
-
 static struct tm utc2localtime(struct tm utctm)
 {
     time_t tmp = timegm(&utctm);
@@ -77,20 +68,6 @@ time_t get_today_sunset_timestamp(const config_handle_t config)
 {
     double tset = get_today_sunset_hour_utc(config);
     return utc_hour_to_timestamp(tset);
-}
-
- 
-// deprecated
-static double utc_hour_to_local_hour(double hour)
-{
-    time_t t = time(NULL);
-    struct tm *now = gmtime(&t);
-    struct tm time_utc = *now;
-    time_utc.tm_hour = (int)hour;
-    time_utc.tm_min = (int)(60 * (hour - (int)hour));
-    struct tm time_local = utc2localtime(time_utc);
-
-    return time_local.tm_hour + (time_local.tm_min)/60.0 + (time_local.tm_sec)/3600;
 }
 
 int seconds_before_sunrise(const config_handle_t config)

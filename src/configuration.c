@@ -96,7 +96,7 @@ static int parse_config_line(char *line, config_handle_t config)
     return 0;
 }
 
-int read_config(const char *config_path, config_handle_t config) 
+int load_config(const char *config_path, config_handle_t config) 
 {
     FILE *conffile = fopen(config_path, "r");
     if (conffile == NULL)
