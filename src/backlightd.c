@@ -1,5 +1,7 @@
 #include <stdlib.h>
+#include <string.h>
 #include <syslog.h>
+#include <signal.h>
 #include <unistd.h>
 #include "backlightd.h"
 #include "timecalc.h"
@@ -37,9 +39,19 @@ static void wait()
     sleep(SLEEP_TIMEOUT);
 }
 
+void quit(int signum)
+{
+    exit(EXIT_SUCCESS);
+}
+
 int main()
 {
     openlog("backlightd", 0, LOG_DAEMON);
+
+    struct sigaction action;
+    memset(&action, 0, sizeof(struct sigaction));
+    action.sa_handler = quit;
+    sigaction(SIGTERM, &action, NULL);
 
     config_t __config;
     config_handle_t config = &__config;
