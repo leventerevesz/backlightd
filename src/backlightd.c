@@ -7,6 +7,8 @@
 #include "backlightd.h"
 #include "timecalc.h"
 
+// Sleeps are interrupted every SLEEP_TIMEOUT seconds, so that no actions are skipped
+// due to device suspend. 
 #define SLEEP_TIMEOUT 600
 
 static int min(int a, int b)
