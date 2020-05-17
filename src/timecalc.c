@@ -106,3 +106,13 @@ int seconds_before_sunset(const config_handle_t config)
     time_t sunset = get_today_sunset_timestamp(config);
     return (int)(sunset - now);
 }
+
+int is_before_sunrise(config_handle_t config)
+{
+    return seconds_before_sunrise(config) > 0;
+}
+
+int is_before_sunset(config_handle_t config)
+{
+    return seconds_before_sunset(config) > 0;
+}

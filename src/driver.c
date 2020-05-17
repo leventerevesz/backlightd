@@ -1,6 +1,8 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <syslog.h>
+#include <unistd.h>
 #include "backlightd.h"
 
 static int read_raw_actual_brightness(const char *interface)
@@ -44,7 +46,7 @@ static int validate_raw_brightness(int raw_brightness, const char* interface)
     int max_brightness = read_raw_max_brightness(interface);
     if (raw_brightness < 0 || raw_brightness > max_brightness)
     {
-        syslog(LOG_ERR, "Illegal raw brightness value: %d", raw_brightness);
+        syslog(LOG_ERR, "Illegal raw brightness value: %d\n", raw_brightness);
         return -1;
     }
     return 0;
@@ -62,6 +64,11 @@ static void write_raw_brightness(int raw_brightness, const char* interface)
 
     strcpy(path, interface);
     strcat(path, "/brightness");
+    if (access(path, W_OK) != 0)
+    {
+        syslog(LOG_ERR, "Write permission denied on %s\n", path);
+        exit(EXIT_FAILURE);
+    }
     file = fopen(path, "w");
     fprintf(file, "%d", raw_brightness);
     fclose(file);

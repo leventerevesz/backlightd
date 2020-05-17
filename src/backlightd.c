@@ -4,7 +4,38 @@
 #include "backlightd.h"
 #include "timecalc.h"
 
-#include <stdio.h>
+#define SLEEP_TIMEOUT 600
+
+static int min(int a, int b)
+{
+    if (a <= b) return a;
+    else return b;
+}
+
+static void wait_for_sunrise(config_handle_t config)
+{
+    int seconds = seconds_before_sunrise(config);
+    while (seconds > 0)
+    {
+        sleep(min(seconds, SLEEP_TIMEOUT));
+        seconds = seconds_before_sunrise(config);
+    }
+}
+
+static void wait_for_sunset(config_handle_t config)
+{
+    int seconds = seconds_before_sunset(config);
+    while (seconds > 0);
+    {
+        sleep(min(seconds, SLEEP_TIMEOUT));
+        seconds = seconds_before_sunset(config);
+    }
+}
+
+static void wait()
+{
+    sleep(SLEEP_TIMEOUT);
+}
 
 int main()
 {
@@ -15,6 +46,26 @@ int main()
     read_config(CONFIG_PATH, config);
 
     syslog(LOG_INFO, "Backlightd starting up...\n");
+
+    while (1)
+    {
+        if (is_before_sunrise(config))
+        {
+            wait_for_sunrise(config);
+            set_brightness(config->brightness_max, config->interface);
+            syslog(LOG_INFO, "Screen brightness set to daytime level.\n");
+        }
+        else if (is_before_sunset(config))
+        {
+            wait_for_sunset(config);
+            set_brightness(config->brightness_min, config->interface);
+            syslog(LOG_INFO, "Screen brightness set to nighttime level.\n");
+        }
+        else
+        {
+            wait();
+        }
+    }
 
     return EXIT_SUCCESS;
     closelog();

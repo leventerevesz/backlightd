@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=
+CFLAGS=-ggdb -Wall
 LIBS=-lm
 DEPS = backlightd.h sunrise.h
 ODIR=../build
