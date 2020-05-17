@@ -1,6 +1,4 @@
 bin/
 etc/
 build/*
-
-## binaries
-tests
+.vscode/
