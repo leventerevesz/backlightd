@@ -17,6 +17,7 @@ static int min(int a, int b)
     else return b;
 }
 
+// Wait in SLEEP_TIMEOUT minute intervals until sunrise happens
 static void wait_for_sunrise(config_handle_t config)
 {
     int seconds = seconds_before_sunrise(config);
@@ -27,6 +28,7 @@ static void wait_for_sunrise(config_handle_t config)
     }
 }
 
+// Wait in SLEEP_TIMEOUT minute intervals until sunset happens
 static void wait_for_sunset(config_handle_t config)
 {
     int seconds = seconds_before_sunset(config);
@@ -64,11 +66,13 @@ int main()
         exit(EXIT_FAILURE);
     }
 
+    // Handle SIGTERM signal
     struct sigaction action;
     memset(&action, 0, sizeof(struct sigaction));
     action.sa_handler = quit;
     sigaction(SIGTERM, &action, NULL);
 
+    // Load configuration from CONFIG_PATH
     config_t config_s;
     config_handle_t config = &config_s;
     load_config(CONFIG_PATH, config);

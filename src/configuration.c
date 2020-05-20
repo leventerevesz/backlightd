@@ -3,6 +3,7 @@
 #include <syslog.h>
 #include "backlightd.h"
 
+
 static int is_valid_line(char *line)
 {
     if (line[0] == '#' || line[0] == '\n')
@@ -13,6 +14,8 @@ static int is_valid_line(char *line)
         return 1;
 }
 
+
+// Split a line into a key-value pair.
 static int split_config_pair(char *line, char **name, char **value)
 {
     *name = strtok(line, "=");
@@ -27,6 +30,8 @@ static int split_config_pair(char *line, char **name, char **value)
     }
 }
 
+
+// Load one key-value pair to the config struct.
 static int load_config_option(const char *name, const char *value, config_handle_t config)
 {
     if (strncmp(name, "longitude", 9) == 0) 
@@ -77,6 +82,8 @@ static int load_config_option(const char *name, const char *value, config_handle
     return 0;
 }
 
+
+// Parse one line of the config file, and save it to the config struct.
 static int parse_config_line(char *line, config_handle_t config)
 {
     if (is_valid_line(line) == 0) return 1;
@@ -96,6 +103,8 @@ static int parse_config_line(char *line, config_handle_t config)
     return 0;
 }
 
+
+// Main function to load the config file.
 int load_config(const char *config_path, config_handle_t config) 
 {
     FILE *conffile = fopen(config_path, "r");

@@ -25,6 +25,7 @@ static time_t utc_hour_to_timestamp(double hour)
 }
 
 
+// Wrapper function for the sunrise.c API
 static double get_today_sunrise_hour_utc(const config_handle_t config)
 {
     time_t t = time(NULL);
@@ -48,6 +49,7 @@ time_t get_today_sunrise_timestamp(const config_handle_t config)
 }
 
 
+// Wrapper function for the sunrise.c API
 static double get_today_sunset_hour_utc(const config_handle_t config)
 {
     time_t t = time(NULL);
@@ -70,6 +72,7 @@ time_t get_today_sunset_timestamp(const config_handle_t config)
     return utc_hour_to_timestamp(tset);
 }
 
+// Returns the time to TODAYS sunrise
 int seconds_before_sunrise(const config_handle_t config)
 {
     time_t now = time(NULL);
@@ -77,12 +80,14 @@ int seconds_before_sunrise(const config_handle_t config)
     return (int)(sunrise - now);
 }
 
+// Returns the time to TODAYS sunset
 int seconds_before_sunset(const config_handle_t config)
 {
     time_t now = time(NULL);
     time_t sunset = get_today_sunset_timestamp(config);
     return (int)(sunset - now);
 }
+
 
 int is_before_sunrise(config_handle_t config)
 {

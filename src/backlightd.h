@@ -12,9 +12,13 @@ typedef struct {
     char interface[80];
 } config_t, *config_handle_t;
 
+// Load configuration from file.
 int load_config(const char *config_path, config_handle_t config);
 
+// Get the currently set screen brightness in percent.
 int get_current_brightness(const char *interface);
+
+// Set the screen brightness in percent.
 void set_brightness(int brightness, const char *interface);
 
 #endif

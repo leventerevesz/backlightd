@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include "backlightd.h"
 
+
 static int read_raw_actual_brightness(const char *interface)
 {
     FILE *file;
@@ -18,6 +19,7 @@ static int read_raw_actual_brightness(const char *interface)
     fclose(file);
     return actual_brightness;
 }
+
 
 static int read_raw_max_brightness(const char *interface)
 {
@@ -33,6 +35,8 @@ static int read_raw_max_brightness(const char *interface)
     return max_brightness;
 }
 
+
+// Get the currently set screen brightness in percent.
 int get_current_brightness(const char *interface)
 {
     int actual_brightness = read_raw_actual_brightness(interface);
@@ -40,6 +44,7 @@ int get_current_brightness(const char *interface)
     int brightness = (int)(100 * (double)actual_brightness / (double)max_brightness);
     return brightness;
 }
+
 
 static int validate_raw_brightness(int raw_brightness, const char* interface)
 {
@@ -51,6 +56,7 @@ static int validate_raw_brightness(int raw_brightness, const char* interface)
     }
     return 0;
 }
+
 
 static void write_raw_brightness(int raw_brightness, const char* interface)
 {
@@ -74,6 +80,8 @@ static void write_raw_brightness(int raw_brightness, const char* interface)
     fclose(file);
 }
 
+
+// Set the screen brightness in percent.
 void set_brightness(int brightness, const char *interface)
 {
     int max_brightness = read_raw_max_brightness(interface);

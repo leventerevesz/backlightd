@@ -1,3 +1,9 @@
+/*
+    Test program for sunrise.c.
+
+    Prints the sunrise/sunset times for the given location.
+*/
+
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
