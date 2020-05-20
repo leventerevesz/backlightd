@@ -1,4 +1,6 @@
-bin/
 etc/
-build/*
 .vscode/
+
+backlightd
+tests
+*.o

@@ -1,22 +1,20 @@
 CC=gcc
-CFLAGS=
+CFLAGS+=
 LIBS=-lm
+
 DEPS = backlightd.h sunrise.h timecalc.h
-ODIR=../build
+OBJ = configuration.o driver.o timecalc.o sunrise.o
 
-_OBJ = configuration.o driver.o timecalc.o sunrise.o
-OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
+%.o: %.c $(DEPS)
+	$(CC) $(CFLAGS) -c -o $@ $<
 
-$(ODIR)/%.o: %.c $(DEPS)
-	$(CC) -c -o $@ $< $(CFLAGS)
+backlightd: $(OBJ) backlightd.o
+	$(CC) -o $@ $^ $(LIBS)
 
-backlightd: $(OBJ)
-	$(CC) -o $@ $^ backlightd.c $(LIBS)
-	mv backlightd ../bin
-
-tests: $(OBJ)
-	$(CC) -ggdb -Wall -o $@ $^ tests.c $(LIBS) 
-	mv tests ../bin
+tests: $(OBJ) tests.o
+	$(CC) -ggdb -Wall -o $@ $^ $(LIBS)
 
 clean:
-	rm -f $(ODIR)/*.o
+	rm -f ./*.o
+	rm -f ./backlightd
+	rm -f ./tests
