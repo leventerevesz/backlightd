@@ -30,7 +30,7 @@ static void wait_for_sunrise(config_handle_t config)
 static void wait_for_sunset(config_handle_t config)
 {
     int seconds = seconds_before_sunset(config);
-    while (seconds > 0);
+    while (seconds > 0)
     {
         sleep(min(seconds, SLEEP_TIMEOUT));
         seconds = seconds_before_sunset(config);
@@ -52,10 +52,16 @@ int main()
 {
     openlog("backlightd", 0, LOG_DAEMON);
 
+    if (geteuid() != 0)
+    {
+        printf("Please run this program with sudo.\n");
+        exit(EXIT_FAILURE);
+    }
+
     if(daemon(0, 0) < 0)
     {
         perror("daemon");
-        return EXIT_FAILURE;
+        exit(EXIT_FAILURE);
     }
 
     struct sigaction action;
@@ -89,6 +95,6 @@ int main()
         }
     }
 
-    return EXIT_SUCCESS;
     closelog();
+    exit(EXIT_SUCCESS);
 }
