@@ -23,7 +23,7 @@ Az indítás után három dolog történhet:
 
 Az indítás után mindig a következő napkelte, napnyugta eseményre vár, és amikor az bekövetkezett, beállítja a megfelelő fényerőt. A napkelte és napnyugta dátumát az adott földrajzi pozícióra és az aktuális napra határozza meg a `sunrise.c` segítségével.
 
-Kiegészítésként még jó ötlet lenne egy lockfile, hogy egyszerre csak egy példány fusson. Systemd integráció az automatikus indításhoz. Valamint a biztonsággal is lehetne még foglalkozni, superuser módban futtatott programról lévén szó, ne hagyjunk benne túl nagy biztonsági réseket.
+Kiegészítésként még jó ötlet lenne egy lockfile, hogy egyszerre csak egy példány fusson. Systemd integráció az automatikus indításhoz. A fényerőállítás történhetne több lépésben. Valamint a biztonsággal is lehetne még foglalkozni, superuser módban futtatott programról lévén szó, ne hagyjunk benne túl nagy biztonsági réseket.
 
 Konfigurációs fájl: `/etc/backlightd/conf`
 ```
@@ -37,8 +37,7 @@ interface=/sys/class/backlight/intel_backlight
 
 A programhoz felhasználtam _Mark S. Teel_ `sunrise.c` kódját.
 
-**Bemutató videó URL:**
-(Szerepeljen benne minden lényeges funkció és az esetleges eltérések a kiíráshoz képest. max. 5 perc)
+**Bemutató videó:** [[Megtekintés]](https://bmeedu-my.sharepoint.com/:v:/g/personal/levente_revesz_edu_bme_hu/EfOmo2lXFa5Mttp4BDckbDMBIjnmhIgkclp5TRBI4HybCA?e=SOXlw6)
 
 # Tapasztalatok
 Milyen tapasztalatokat gyűjtött a feladat elkészítése során? Mi volt egyszerűbb / nehezebb a tervezetnél? Visszatekintve mit csinálna másként? (pár mondatban)
