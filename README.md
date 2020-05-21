@@ -40,7 +40,6 @@ A programhoz felhasználtam _Mark S. Teel_ `sunrise.c` kódját.
 **Bemutató videó:** [[Megtekintés]](https://bmeedu-my.sharepoint.com/:v:/g/personal/levente_revesz_edu_bme_hu/EfOmo2lXFa5Mttp4BDckbDMBIjnmhIgkclp5TRBI4HybCA?e=SOXlw6)
 
 # Tapasztalatok
-Milyen tapasztalatokat gyűjtött a feladat elkészítése során? Mi volt egyszerűbb / nehezebb a tervezetnél? Visszatekintve mit csinálna másként? (pár mondatban)
 
 Az időkezelő függvények a C-ben több odafigyelést és munkát igényelnek, mint az általam eddig használt Python nyelven. Az időhöz kapcsolódó kódrészek megírásával sok időt töltöttem. 
 
