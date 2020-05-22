@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <syslog.h>
 #include "backlightd.h"
-#include "timecalc.h"
+#include "timefunctions.h"
 
 void print_config(void)
 {
@@ -29,24 +30,21 @@ void test_set_brightness(void)
     set_brightness(77, config.interface);
 }
 
-void test_sunset_sunrise_times(void)
-{   
+void test_brightness_transition(void)
+{
     config_t config;
     load_config(CONFIG_PATH, &config);
-    time_t sunrise = get_today_sunrise_timestamp(&config);
-    time_t sunset = get_today_sunset_timestamp(&config);
-    printf("Sunrise time: (%ld) %s", sunrise, ctime(&sunrise));
-    printf("Sunset  time: (%ld) %s", sunset, ctime(&sunset));
-    printf("Time to sunrise: %lf hours\n", seconds_before_sunrise(&config)/3600.0);
-    printf("Time to sunset : %lf hours\n", seconds_before_sunset(&config)/3600.0);
+    brightness_transition(config.interface, 10, 100);
 }
 
 int main(void)
 {
-    print_config();
+    openlog("backlightd", 0, LOG_DAEMON);
+    //print_config();
     //test_get_current_brightness();
     //test_set_brightness();
     //test_get_current_brightness();
-    test_sunset_sunrise_times();
+    test_brightness_transition();
+    closelog();
     return 0;
 }

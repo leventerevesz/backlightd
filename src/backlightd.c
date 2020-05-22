@@ -4,44 +4,23 @@
 #include <string.h>
 #include <syslog.h>
 #include <unistd.h>
+#include <time.h>
 #include "backlightd.h"
-#include "timecalc.h"
+#include "timefunctions.h"
+#include "apicalls.h"
 
-// Sleeps are interrupted every SLEEP_TIMEOUT seconds, so that no actions are skipped
-// due to device suspend. 
-#define SLEEP_TIMEOUT 600
 
-static int min(int a, int b)
+void brightness_transition(const char *interface, int current, int goal)
 {
-    if (a <= b) return a;
-    else return b;
-}
-
-// Wait in SLEEP_TIMEOUT minute intervals until sunrise happens
-static void wait_for_sunrise(config_handle_t config)
-{
-    int seconds = seconds_before_sunrise(config);
-    while (seconds > 0)
+    syslog(LOG_INFO, "Transition %d -> %d in %d seconds...\n", current, goal, TRANSITION_TIME);
+    double stepsize = (goal - current) / 5.0;
+    for (int step = 1; step <= 5; step++)
     {
-        sleep(min(seconds, SLEEP_TIMEOUT));
-        seconds = seconds_before_sunrise(config);
+        int brightness = current + (int)(step * stepsize);
+        set_brightness(brightness, interface);
+        syslog(LOG_DEBUG, "  - step %d: %d\n", step, brightness);
+        sleep(TRANSITION_TIME / 5);
     }
-}
-
-// Wait in SLEEP_TIMEOUT minute intervals until sunset happens
-static void wait_for_sunset(config_handle_t config)
-{
-    int seconds = seconds_before_sunset(config);
-    while (seconds > 0)
-    {
-        sleep(min(seconds, SLEEP_TIMEOUT));
-        seconds = seconds_before_sunset(config);
-    }
-}
-
-static void wait()
-{
-    sleep(SLEEP_TIMEOUT);
 }
 
 void quit(int signum)
@@ -60,11 +39,11 @@ int main()
         exit(EXIT_FAILURE);
     }
 
-    if(daemon(0, 0) < 0)
-    {
-        perror("daemon");
-        exit(EXIT_FAILURE);
-    }
+    // if(daemon(0, 0) < 0)
+    // {
+    //     perror("daemon");
+    //     exit(EXIT_FAILURE);
+    // }
 
     // Handle SIGTERM signal
     struct sigaction action;
@@ -79,23 +58,34 @@ int main()
 
     syslog(LOG_INFO, "Backlightd starting up...\n");
 
+    sun_times_t suntimes; // the NEXT sunset and sunrise times
+
+    // Load today's sunset-sunrise times
+    apicall(config->latitude, config->longitude, "today", &suntimes);
     while (1)
     {
-        if (is_before_sunrise(config))
+        if (seconds_to_timestamp(suntimes.sunrise) > 0)
         {
-            wait_for_sunrise(config);
-            set_brightness(config->brightness_max, config->interface);
-            syslog(LOG_INFO, "Screen brightness set to daytime level.\n");
+            syslog(LOG_DEBUG, "Waiting for sunrise...\n");
+            wait_until(suntimes.sunrise);
+            brightness_transition(
+                config->interface,
+                get_current_brightness(config->interface),
+                config->brightness_max);
         }
-        else if (is_before_sunset(config))
+        else if (seconds_to_timestamp(suntimes.sunset) > 0)
         {
-            wait_for_sunset(config);
-            set_brightness(config->brightness_min, config->interface);
-            syslog(LOG_INFO, "Screen brightness set to nighttime level.\n");
+            syslog(LOG_DEBUG, "Waiting for sunset...\n");
+            wait_until(suntimes.sunset);
+                brightness_transition(
+                    config->interface,
+                    get_current_brightness(config->interface),
+                    config->brightness_min);
         }
         else
         {
-            wait();
+            // Load tomorrow's sunset-sunrise times
+            apicall(config->latitude, config->longitude, "tomorrow", &suntimes);
         }
     }
 

@@ -3,6 +3,9 @@
 
 #define CONFIG_PATH "/etc/backlightd/conf"
 
+#define SLEEP_TIMEOUT 60
+#define TRANSITION_TIME 60
+
 typedef struct {
     double longitude;
     double latitude;
@@ -12,11 +15,6 @@ typedef struct {
     char interface[80];
 } config_t, *config_handle_t;
 
-typedef struct
-{
-    time_t sunrise;
-    time_t sunset;
-} sun_times_t, *sun_times_handle_t;
 
 // Load configuration from file.
 int load_config(const char *config_path, config_handle_t config);
@@ -26,5 +24,7 @@ int get_current_brightness(const char *interface);
 
 // Set the screen brightness in percent.
 void set_brightness(int brightness, const char *interface);
+
+void brightness_transition(const char *interface, int current, int goal);
 
 #endif

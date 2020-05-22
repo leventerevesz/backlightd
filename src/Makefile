@@ -1,9 +1,9 @@
 CC=gcc
 CFLAGS+=
-LIBS=-lm
+LIBS+=-lcurl
 
-DEPS = backlightd.h sunrise.h timecalc.h
-OBJ = configuration.o driver.o timecalc.o sunrise.o
+DEPS = backlightd.h timefunctions.h apicalls.h jsmn.h
+OBJ = configuration.o driver.o timefunctions.o apicalls.o
 
 %.o: %.c $(DEPS)
 	$(CC) $(CFLAGS) -c -o $@ $<

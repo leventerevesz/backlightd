@@ -1,5 +1,3 @@
-#define __USE_XOPEN
-#define _GNU_SOURCE
 #include <stdio.h>
 #include <string.h>
 #include <syslog.h>
@@ -7,6 +5,8 @@
 #include <curl/curl.h>
 #include "jsmn.h"
 #include "backlightd.h"
+#include "timefunctions.h"
+#include "apicalls.h"
 
 
 static int jsoneq(const char *json, jsmntok_t *tok, const char *s)
@@ -17,15 +17,6 @@ static int jsoneq(const char *json, jsmntok_t *tok, const char *s)
         return 0;
     }
     return -1;
-}
-
-
-static time_t isostring_to_timestamp(const char* timestr)
-{
-    struct tm tm;
-    memset(&tm, 0, sizeof(struct tm));
-    strptime(timestr, "%Y-%m-%dT%H:%M:%S+00:00", &tm);
-    return timegm(&tm);
 }
 
 
@@ -91,7 +82,7 @@ size_t my_write_callback(char *ptr, size_t size, size_t nmemb, char *buff)
 
 
 // Get sunrise-sunset times from api.sunrise-sunset.org
-int apicall(double latitude, double longitude, sun_times_handle_t times)
+int apicall(double latitude, double longitude, const char *date, sun_times_handle_t times)
 {
     CURL *curl;
     CURLcode res;
@@ -101,7 +92,7 @@ int apicall(double latitude, double longitude, sun_times_handle_t times)
     {
         char buff[1000];
         char endpoint[120];
-        sprintf(endpoint, "http://api.sunrise-sunset.org/json?lat=%.4lf&lng=%.4lf&date=today&formatted=0", latitude, longitude);
+        sprintf(endpoint, "http://api.sunrise-sunset.org/json?lat=%.4lf&lng=%.4lf&date=%s&formatted=0", latitude, longitude, date);
         curl_easy_setopt(curl, CURLOPT_URL, endpoint);
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, my_write_callback);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, buff);
@@ -118,12 +109,4 @@ int apicall(double latitude, double longitude, sun_times_handle_t times)
         curl_easy_cleanup(curl);
     }
     return 0;
-}
-
-
-int main()
-{
-    sun_times_t _times;
-    sun_times_handle_t times = &_times;
-    apicall(46.16, 18.35, times);
 }
