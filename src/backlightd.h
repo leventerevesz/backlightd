@@ -11,7 +11,6 @@ typedef struct {
     double latitude;
     int brightness_max;
     int brightness_min;
-    int automatic;
     char interface[80];
 } config_t, *config_handle_t;
 

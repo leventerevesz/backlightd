@@ -46,17 +46,6 @@ static int load_config_option(const char *name, const char *value, config_handle
         if (sscanf(value, "%lf", &dval) == 1)
             config->latitude = dval;
     }
-    else if (strncmp(name, "automatic", 9) == 0)
-    {
-        char bval[6];
-        if (sscanf(value, "%s", bval) == 1)
-        {
-            if (strncmp(bval, "true", 4) == 0)
-                config->automatic = 1;
-            else if (strncmp(bval, "false", 5) == 0)
-                config->automatic = 0;
-        }
-    }
     else if (strncmp(name, "interface", 9) == 0)
     {
         char sval[80];
