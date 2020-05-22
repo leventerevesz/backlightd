@@ -34,6 +34,7 @@ void quit(int signum)
     rc = flock(pid_file, LOCK_UN);
     close(pid_file);
     unlink(PIDFILE);
+    closelog();
     exit(EXIT_SUCCESS);
 }
 
@@ -47,7 +48,7 @@ int main()
         exit(EXIT_FAILURE);
     }
 
-    // Create PIDfile
+    // Create PIDFILE
     pid_file = open(PIDFILE, O_CREAT | O_RDWR, 0666);
     rc = flock(pid_file, LOCK_EX | LOCK_NB);
     if(rc) {
@@ -60,6 +61,7 @@ int main()
         perror("daemon");
         exit(EXIT_FAILURE);
     }
+    // Write pid in PIDFILE
     char pid[10];
     sprintf(pid, "%d", getpid());
     write(pid_file, pid, strlen(pid));
@@ -80,7 +82,7 @@ int main()
     sun_times_t suntimes; // the NEXT sunset and sunrise times
 
     // Load today's sunset-sunrise times
-    apicall(config->latitude, config->longitude, "today", &suntimes);
+    get_sunset_sunrise_times(config->latitude, config->longitude, "today", &suntimes);
     while (1)
     {
         if (seconds_to_timestamp(suntimes.sunrise) > 0)
@@ -104,10 +106,10 @@ int main()
         else
         {
             // Load tomorrow's sunset-sunrise times
-            apicall(config->latitude, config->longitude, "tomorrow", &suntimes);
+            get_sunset_sunrise_times(config->latitude, config->longitude, "tomorrow", &suntimes);
         }
     }
 
-    closelog();
-    exit(EXIT_SUCCESS);
+    quit(0);
+    return 0;
 }

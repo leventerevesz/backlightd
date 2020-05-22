@@ -4,8 +4,8 @@
 #define CONFIG_PATH "/etc/backlightd/conf"
 #define PIDFILE "/run/backlightd.pid"
 
-#define SLEEP_TIMEOUT 60
-#define TRANSITION_TIME 60
+#define SLEEP_TIMEOUT 60    // Wake from sleep every SLEEP_TIMEOUT seconds
+#define TRANSITION_TIME 60  // Total brightness transition time in seconds
 
 typedef struct {
     double longitude;
@@ -25,6 +25,7 @@ int get_current_brightness(const char *interface);
 // Set the screen brightness in percent.
 void set_brightness(int brightness, const char *interface);
 
+// Change brightness from current to goal in TRANSITION_TIME seconds
 void brightness_transition(const char *interface, int current, int goal);
 
 #endif
