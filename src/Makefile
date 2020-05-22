@@ -14,7 +14,17 @@ backlightd: $(OBJ) backlightd.o
 tests: $(OBJ) tests.o
 	$(CC) -ggdb -Wall -o $@ $^ $(LIBS)
 
+install:
+	install ./backlightd /usr/bin
+	install ./backlightd.service /lib/systemd/system/
+
+remove:
+	rm /usr/bin/backlightd
+	rm /lib/systemd/system/backlightd.service
+
 clean:
 	rm -f ./*.o
 	rm -f ./backlightd
 	rm -f ./tests
+
+PHONY: install, remove, clean

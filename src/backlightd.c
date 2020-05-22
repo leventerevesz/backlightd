@@ -1,14 +1,19 @@
+#include <errno.h>
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/file.h>
 #include <syslog.h>
-#include <unistd.h>
 #include <time.h>
+#include <unistd.h>
+
 #include "backlightd.h"
 #include "timefunctions.h"
 #include "apicalls.h"
 
+static int pid_file;
+static int rc;
 
 void brightness_transition(const char *interface, int current, int goal)
 {
@@ -26,6 +31,9 @@ void brightness_transition(const char *interface, int current, int goal)
 void quit(int signum)
 {
     syslog(LOG_INFO, "Backlightd shutting down...\n");
+    rc = flock(pid_file, LOCK_UN);
+    close(pid_file);
+    unlink(PIDFILE);
     exit(EXIT_SUCCESS);
 }
 
@@ -39,11 +47,22 @@ int main()
         exit(EXIT_FAILURE);
     }
 
-    // if(daemon(0, 0) < 0)
-    // {
-    //     perror("daemon");
-    //     exit(EXIT_FAILURE);
-    // }
+    // Create PIDfile
+    pid_file = open(PIDFILE, O_CREAT | O_RDWR, 0666);
+    rc = flock(pid_file, LOCK_EX | LOCK_NB);
+    if(rc) {
+        if(EWOULDBLOCK == errno)
+            exit(EXIT_FAILURE);
+    }
+    
+    if(daemon(0, 0) < 0)
+    {
+        perror("daemon");
+        exit(EXIT_FAILURE);
+    }
+    char pid[10];
+    sprintf(pid, "%d", getpid());
+    write(pid_file, pid, strlen(pid));
 
     // Handle SIGTERM signal
     struct sigaction action;

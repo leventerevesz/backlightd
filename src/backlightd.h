@@ -2,6 +2,7 @@
 #define BACKLIGHTD_H
 
 #define CONFIG_PATH "/etc/backlightd/conf"
+#define PIDFILE "/run/backlightd.pid"
 
 #define SLEEP_TIMEOUT 60
 #define TRANSITION_TIME 60
