@@ -12,6 +12,12 @@ typedef struct {
     char interface[80];
 } config_t, *config_handle_t;
 
+typedef struct
+{
+    time_t sunrise;
+    time_t sunset;
+} sun_times_t, *sun_times_handle_t;
+
 // Load configuration from file.
 int load_config(const char *config_path, config_handle_t config);
 
