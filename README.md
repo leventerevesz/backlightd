@@ -1,7 +1,7 @@
-# Házi feladat
+# LINUX programozása Házi feladat
 
-Név/Nevek NEPTUN kóddal:
-- Révész Levente (IRW6T2)
+Készítette
+- Révész Levente
 
 # Feladatkiírás
 A szoftvervilágban dolgozó, tanuló társaimhoz hasonlóan gyakran használom éjszakába nyúlóan a számítógépem. Az egyre terjedő sötét témák, valamint a ma már minden asztali operációs rendszeren alapfunkciónak számító éjszakai mód megkönnyítik ezt a tevékenységet. Azonban van még egy fontos paraméter, melynek állítása nem automatikus: a képernyő fényereje. A laptopok képernyőjének háttérvilágítása szoftveresen állítható, az éjszakai mód azonban ezt nem használja ki egyik általam ismert rendszeren sem.
