@@ -3,7 +3,7 @@
 Készítette
 - Révész Levente
 
-# Feladatkiírás
+## Feladatkiírás
 A szoftvervilágban dolgozó, tanuló társaimhoz hasonlóan gyakran használom éjszakába nyúlóan a számítógépem. Az egyre terjedő sötét témák, valamint a ma már minden asztali operációs rendszeren alapfunkciónak számító éjszakai mód megkönnyítik ezt a tevékenységet. Azonban van még egy fontos paraméter, melynek állítása nem automatikus: a képernyő fényereje. A laptopok képernyőjének háttérvilágítása szoftveresen állítható, az éjszakai mód azonban ezt nem használja ki egyik általam ismert rendszeren sem.
 
 A tervezett program egy háttérben futó daemon, ami a beépített éjszakai mód működéséhez hasonlóan automatikusan állítja a monitor fényerejét. A szürkület és a pirkadat idejét figyelembe véve éjszakára visszaveszi a fényerőt, nappal pedig felemeli azt.
@@ -15,7 +15,7 @@ Az alábbi funkciók megvalósítása a cél:
 + systemd integráció
 + syslog használat
 
-# Megvalósított program
+## Megvalósított program
 Az összes tervezett funkciót sikerült megvalósítani. A program az `/etc/backlightd/conf` fájlból olvassa be a beállításokat. A lokációt, az éjszakai és nappali fényerőt, valamint a backlight interfészt lehet beállítani. A programot superuserként kell futtatni, mert csak így tudja módosítani a fényerőt.
 
 Konfigurációs fájl: `/etc/backlightd/conf`
@@ -52,7 +52,7 @@ Kiegészítésként a biztonsággal lehetne még foglalkozni, superuser módban 
 
 **Bemutató videó:** [[Megtekintés]](https://bmeedu-my.sharepoint.com/:v:/g/personal/levente_revesz_edu_bme_hu/EfOmo2lXFa5Mttp4BDckbDMBIjnmhIgkclp5TRBI4HybCA?e=SOXlw6)
 
-# Fordítás és telepítés
+## Fordítás és telepítés
 
 A program függőségei:
 
@@ -75,7 +75,7 @@ Eltávolítás
 sudo make remove
 ```
 
-# Tapasztalatok
+## Tapasztalatok
 
 Az időkezelő függvények a C-ben több odafigyelést és munkát igényelnek, mint az általam eddig használt Python nyelven. Az időhöz kapcsolódó kódrészek megírásával sok időt töltöttem. 
 
